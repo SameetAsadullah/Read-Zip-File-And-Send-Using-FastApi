@@ -12,7 +12,7 @@ app = FastAPI()
 async def mock_download():
     zip_bytes_io = io.BytesIO()
     input_zip = zipfile.ZipFile("output.zip", 'r')
-    files = [file for file in input_zip.namelist() if file.find('.jpg') != -1]  # Only reading jpg files
+    files = [file for file in input_zip.namelist() if file.find('.jpg') != -1]     # Only reading jpg files
     with zipfile.ZipFile(zip_bytes_io, 'w', zipfile.ZIP_DEFLATED) as zipped:
         for file in files:
             zipped.writestr(file, input_zip.read(file))
@@ -21,7 +21,7 @@ async def mock_download():
     response = StreamingResponse(
                 iter([zip_bytes_io.getvalue()]),
                 media_type="application/x-zip-compressed",
-                headers = {"Content-Disposition":f"attachment;filename=output.zip",
+                headers = {"Content-Disposition":f"attachment;filename=output.zip",    # 'attachment' automatically downloads the file if IDM extension is enabled on browser. Use 'inline' to avoid that.
                             "Content-Length": str(zip_bytes_io.getbuffer().nbytes)}
             )
     zip_bytes_io.close()
